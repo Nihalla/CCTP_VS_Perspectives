@@ -21,6 +21,7 @@ public class Player_Movement : MonoBehaviour
     private Vector3 m_Velocity = Vector3.zero;
     private bool jump = false;
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;
+    [SerializeField] private bool use_perspective_camera = true;
     // Start is called before the first frame update
     void Awake()
     {
@@ -114,7 +115,7 @@ public class Player_Movement : MonoBehaviour
 
     private void ChangeCam()
     {
-        if (movement_input == Vector2.zero)
+        if (use_perspective_camera && movement_input == Vector2.zero)
         {
             if (camera_switch > 0)
             {
