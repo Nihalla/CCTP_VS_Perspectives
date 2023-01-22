@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Z_Track
+  - Manager
   layers:
   - Default
   - TransparentFX
