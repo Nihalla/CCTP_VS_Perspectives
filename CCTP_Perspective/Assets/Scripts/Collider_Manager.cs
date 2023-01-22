@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Collider_Manager : MonoBehaviour
 {
-    private GameObject player;
+    //private GameObject player;
     private GameObject[] blocks;
     private List<GameObject> solid_blocks = new();
     //[SerializeField] private LayerMask layer;
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
         blocks = FindObjectsOfType<GameObject>();
         for(int i = 0; i < blocks.Length; i++)
         {
@@ -31,7 +31,7 @@ public class Collider_Manager : MonoBehaviour
         //Debug.Log(blocks.Co);
         foreach (GameObject block in solid_blocks)
         {
-            Debug.Log(block.name);
+            //Debug.Log(block.name);
             block.GetComponent<IgnoreColission>().UpdateCollissions(view);
         }
     }

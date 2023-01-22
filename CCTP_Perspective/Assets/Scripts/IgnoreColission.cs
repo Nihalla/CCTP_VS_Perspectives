@@ -21,7 +21,7 @@ public class IgnoreColission : MonoBehaviour
     }
     public void UpdateCollissions(GameObject new_view)
     {
-        Debug.Log(new_view);
+        //Debug.Log(new_view);
         camera_view = new_view;
         switch (ignore)
         {

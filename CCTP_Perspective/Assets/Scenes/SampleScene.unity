@@ -11587,6 +11587,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dynamic Collision (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 4699241923220031952, guid: d7d138a0e4b39134aba9f755a4fe7e3e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4699241923220031953, guid: d7d138a0e4b39134aba9f755a4fe7e3e, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -24181,6 +24185,10 @@ PrefabInstance:
     - target: {fileID: 4699241923220031952, guid: d7d138a0e4b39134aba9f755a4fe7e3e, type: 3}
       propertyPath: m_Name
       value: Dynamic Collision (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699241923220031952, guid: d7d138a0e4b39134aba9f755a4fe7e3e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4699241923220031953, guid: d7d138a0e4b39134aba9f755a4fe7e3e, type: 3}
       propertyPath: m_RootOrder
