@@ -20,8 +20,15 @@ public class Player_Movement : MonoBehaviour
     private float camera_switch;
     private Vector3 m_Velocity = Vector3.zero;
     private bool jump = false;
+    public bool switched = false;
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;
     [SerializeField] private bool use_perspective_camera = true;
+    public Camera perpesctive_cam;
+    public bool in_orthodox = true;
+    public Vector2 mouse_pos;
+    private GameObject selected_tile;
+    [SerializeField] private Canvas canvas;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -31,7 +38,11 @@ public class Player_Movement : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
         controls.Camera.Switch_Cam.performed += ctx => camera_switch = ctx.ReadValue<float>();
         controls.Camera.Switch_Cam.performed += ctx => ChangeCam();
+        controls.Camera.Perspective_Mode.performed += ctx => ChangePerspective();
+        controls.Player.Look.performed += ctx => mouse_pos = ctx.ReadValue<Vector2>();
+        controls.Camera.Select.performed += ctx => Select();
         active_camera = cam_locations[0];
+        canvas.enabled = false;
     }
 
     /*private void Start()
@@ -43,54 +54,108 @@ public class Player_Movement : MonoBehaviour
     void Update()
     {
         //Debug.Log(camera_switch);
+        
     }
 
     private void FixedUpdate()
     {
-        switch (active_camera.gameObject.name)
+        if (in_orthodox)
         {
-            case "Camera N":
-                
-                controller.Move(movement_input.x * char_speed * Time.deltaTime, false, jump, false);
-                z_axis.transform.position = new Vector3(transform.position.x, transform.position.y, z_axis.transform.position.z);
-                jump = false;
-                break;
+            switch (active_camera.gameObject.name)
+            {
+                case "Camera N":
 
-            case "Camera E":
-                
-                Vector3 target_vel = new Vector3(0, z_axis.GetComponent<Rigidbody>().velocity.y, -movement_input.x * 5f);
-                z_axis.GetComponent<Rigidbody>().velocity = Vector3.SmoothDamp(z_axis.GetComponent<Rigidbody>().velocity, target_vel, ref m_Velocity, m_MovementSmoothing);
-                transform.position = new Vector3(transform.position.x, z_axis.transform.position.y, z_axis.transform.position.z);
+                    controller.Move(movement_input.x * char_speed * Time.deltaTime, false, jump, false);
+                    z_axis.transform.position = new Vector3(transform.position.x, transform.position.y, z_axis.transform.position.z);
 
-                if (Z_jump.GetGround() && jump)
-                {
-                    Z_jump.SetGround(false);
-                    z_axis.GetComponent<Rigidbody>().AddForce(new Vector2(0f, 250f));
-                }
-                jump = false;
-                break;
+                    jump = false;
+                    break;
 
-            case "Camera W":
-                
-                Vector3 target_velo = new Vector3(0, z_axis.GetComponent<Rigidbody>().velocity.y, movement_input.x * 5f);
-                z_axis.GetComponent<Rigidbody>().velocity = Vector3.SmoothDamp(z_axis.GetComponent<Rigidbody>().velocity, target_velo, ref m_Velocity, m_MovementSmoothing);
-                transform.position = new Vector3(transform.position.x, z_axis.transform.position.y, z_axis.transform.position.z);
-                if (Z_jump.GetGround() && jump)
-                {
-                    Z_jump.SetGround(false);
-                    z_axis.GetComponent<Rigidbody>().AddForce(new Vector2(0f, 250f));
-                }
-                jump = false;
-                break;
+                case "Camera E":
 
-            case "Camera S":
-                
-                controller.Move(-movement_input.x * char_speed * Time.deltaTime, false, jump, false);
-                z_axis.transform.position = new Vector3(transform.position.x, transform.position.y, z_axis.transform.position.z);
-                jump = false;
-                break;
+                    Vector3 target_vel = new Vector3(0, z_axis.GetComponent<Rigidbody>().velocity.y, -movement_input.x * 5f);
+                    z_axis.GetComponent<Rigidbody>().velocity = Vector3.SmoothDamp(z_axis.GetComponent<Rigidbody>().velocity, target_vel, ref m_Velocity, m_MovementSmoothing);
+                    transform.position = new Vector3(transform.position.x, z_axis.transform.position.y, z_axis.transform.position.z);
+
+                    if (Z_jump.GetGround() && jump)
+                    {
+                        Z_jump.SetGround(false);
+                        z_axis.GetComponent<Rigidbody>().AddForce(new Vector2(0f, 250f));
+                    }
+                    jump = false;
+
+                    break;
+
+                case "Camera W":
+
+                    Vector3 target_velo = new Vector3(0, z_axis.GetComponent<Rigidbody>().velocity.y, movement_input.x * 5f);
+                    z_axis.GetComponent<Rigidbody>().velocity = Vector3.SmoothDamp(z_axis.GetComponent<Rigidbody>().velocity, target_velo, ref m_Velocity, m_MovementSmoothing);
+                    transform.position = new Vector3(transform.position.x, z_axis.transform.position.y, z_axis.transform.position.z);
+                    if (Z_jump.GetGround() && jump)
+                    {
+                        Z_jump.SetGround(false);
+                        z_axis.GetComponent<Rigidbody>().AddForce(new Vector2(0f, 250f));
+                    }
+                    jump = false;
+
+                    break;
+
+                case "Camera S":
+
+                    controller.Move(-movement_input.x * char_speed * Time.deltaTime, false, jump, false);
+                    z_axis.transform.position = new Vector3(transform.position.x, transform.position.y, z_axis.transform.position.z);
+
+                    jump = false;
+                    break;
+            }
         }
         
+    }
+    
+    private void Select()
+    {
+        if (!in_orthodox)
+        {
+            GameObject select = FindObjectOfType<Obj_Movement>().GetSelection();
+            if (select != null)
+            {
+                selected_tile = select;
+            }
+        }
+    }
+    private void ChangePerspective()
+    {
+        in_orthodox = !in_orthodox;
+        if (in_orthodox)
+        {
+            canvas.enabled = false;
+            perpesctive_cam.enabled = false;
+            main_camera.enabled = true;
+        }
+        else
+        {
+            canvas.enabled = true;
+            perpesctive_cam.enabled = true;
+            main_camera.enabled = false;
+        }
+    }
+    public GameObject GetCam()
+    {
+        return active_camera;
+    }
+    public float Difference_Calc(GameObject object_to_scale)
+    {
+        float distance_difference = 0;
+        if (active_camera.gameObject.name == "Camera N" || active_camera.gameObject.name == "Camera S")
+        { 
+            distance_difference = Mathf.Abs(object_to_scale.transform.position.z - active_camera.transform.position.z); 
+        }
+        else
+        {
+            distance_difference = Mathf.Abs(object_to_scale.transform.position.x - active_camera.transform.position.x);
+        }
+
+        return distance_difference;
     }
 
     private void Z_Axis()
@@ -115,7 +180,7 @@ public class Player_Movement : MonoBehaviour
 
     private void ChangeCam()
     {
-        if (use_perspective_camera && movement_input == Vector2.zero)
+        if (use_perspective_camera && in_orthodox && movement_input == Vector2.zero)
         {
             if (camera_switch > 0)
             {
@@ -188,34 +253,34 @@ public class Player_Movement : MonoBehaviour
             switch (active_camera.gameObject.name)
             {
                 case "Camera N":
-                    background.transform.GetChild(0).gameObject.SetActive(true);
+                    /*background.transform.GetChild(0).gameObject.SetActive(true);
                     background.transform.GetChild(1).gameObject.SetActive(false);
                     background.transform.GetChild(2).gameObject.SetActive(false);
-                    background.transform.GetChild(3).gameObject.SetActive(false);
+                    background.transform.GetChild(3).gameObject.SetActive(false);*/
                     X_Axis();
                     break;
 
                 case "Camera E":
-                    background.transform.GetChild(0).gameObject.SetActive(false);
+                    /*background.transform.GetChild(0).gameObject.SetActive(false);
                     background.transform.GetChild(1).gameObject.SetActive(true);
                     background.transform.GetChild(2).gameObject.SetActive(false);
-                    background.transform.GetChild(3).gameObject.SetActive(false);
+                    background.transform.GetChild(3).gameObject.SetActive(false);*/
                     Z_Axis();
                     break;
 
                 case "Camera W":
-                    background.transform.GetChild(0).gameObject.SetActive(false);
+                    /*background.transform.GetChild(0).gameObject.SetActive(false);
                     background.transform.GetChild(1).gameObject.SetActive(false);
                     background.transform.GetChild(2).gameObject.SetActive(true);
-                    background.transform.GetChild(3).gameObject.SetActive(false);
+                    background.transform.GetChild(3).gameObject.SetActive(false);*/
                     Z_Axis();
                     break;
 
                 case "Camera S":
-                    background.transform.GetChild(0).gameObject.SetActive(false);
+                    /*background.transform.GetChild(0).gameObject.SetActive(false);
                     background.transform.GetChild(1).gameObject.SetActive(false);
                     background.transform.GetChild(2).gameObject.SetActive(false);
-                    background.transform.GetChild(3).gameObject.SetActive(true);
+                    background.transform.GetChild(3).gameObject.SetActive(true);*/
                     X_Axis();
                     break;
             }
@@ -228,6 +293,35 @@ public class Player_Movement : MonoBehaviour
     {
         
         return active_camera;
+    }
+
+    public void MoveUp()
+    {
+        if (selected_tile != null)
+        {
+            selected_tile.GetComponent<Movement_Options>().MoveUp();
+        }
+    }
+    public void MoveDown()
+    {
+        if (selected_tile != null)
+        {
+            selected_tile.GetComponent<Movement_Options>().MoveDown();
+        }
+    }
+    public void MoveLeft()
+    {
+        if (selected_tile != null)
+        {
+            selected_tile.GetComponent<Movement_Options>().MoveLeft();
+        }
+    }
+    public void MoveRight()
+    {
+        if (selected_tile != null)
+        {
+            selected_tile.GetComponent<Movement_Options>().MoveRight();
+        }
     }
 
     private void OnEnable()

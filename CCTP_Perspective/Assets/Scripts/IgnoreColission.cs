@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IgnoreColission : MonoBehaviour
 {
-    [SerializeField]private GameObject camera_view;
+    private GameObject camera_view;
     private enum Perspectives
     {
         NORTH,
