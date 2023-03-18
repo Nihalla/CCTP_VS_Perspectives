@@ -29,6 +29,9 @@ public class Player_Movement : MonoBehaviour
     private GameObject selected_tile;
     [SerializeField] private Canvas canvas;
 
+    [SerializeField] private bool perspective_change_enabled = true;
+    [SerializeField] private bool block_movement_enabled = true;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -125,18 +128,21 @@ public class Player_Movement : MonoBehaviour
     }
     private void ChangePerspective()
     {
-        in_orthodox = !in_orthodox;
-        if (in_orthodox)
+        if (block_movement_enabled)
         {
-            canvas.enabled = false;
-            perpesctive_cam.enabled = false;
-            main_camera.enabled = true;
-        }
-        else
-        {
-            canvas.enabled = true;
-            perpesctive_cam.enabled = true;
-            main_camera.enabled = false;
+            in_orthodox = !in_orthodox;
+            if (in_orthodox)
+            {
+                canvas.enabled = false;
+                perpesctive_cam.enabled = false;
+                main_camera.enabled = true;
+            }
+            else
+            {
+                canvas.enabled = true;
+                perpesctive_cam.enabled = true;
+                main_camera.enabled = false;
+            }
         }
     }
     public GameObject GetCam()
@@ -180,115 +186,117 @@ public class Player_Movement : MonoBehaviour
 
     private void ChangeCam()
     {
-        if (use_perspective_camera && in_orthodox && movement_input == Vector2.zero)
+        if (perspective_change_enabled)
         {
-            if (camera_switch > 0)
+            if (use_perspective_camera && in_orthodox && movement_input == Vector2.zero)
             {
-                switch (active_camera.gameObject.name)
+                if (camera_switch > 0)
                 {
-                    case "Camera N":
+                    switch (active_camera.gameObject.name)
+                    {
+                        case "Camera N":
 
-                        active_camera = cam_locations[2];
+                            active_camera = cam_locations[2];
 
 
-                        break;
+                            break;
 
-                    case "Camera E":
+                        case "Camera E":
 
-                        active_camera = cam_locations[0];
+                            active_camera = cam_locations[0];
 
-                        break;
+                            break;
 
-                    case "Camera W":
+                        case "Camera W":
 
-                        active_camera = cam_locations[3];
+                            active_camera = cam_locations[3];
 
-                        break;
+                            break;
 
-                    case "Camera S":
+                        case "Camera S":
 
-                        active_camera = cam_locations[1];
+                            active_camera = cam_locations[1];
 
-                        break;
+                            break;
+                    }
+                    main_camera.transform.Rotate(0.0f, -90.0f, 0.0f);
                 }
-                main_camera.transform.Rotate(0.0f, -90.0f, 0.0f);
-            }
-            else if (camera_switch < 0)
-            {
+                else if (camera_switch < 0)
+                {
+                    switch (active_camera.gameObject.name)
+                    {
+                        case "Camera N":
+
+                            active_camera = cam_locations[1];
+
+                            X_Axis();
+                            break;
+
+                        case "Camera E":
+
+                            active_camera = cam_locations[3];
+
+                            Z_Axis();
+                            break;
+
+                        case "Camera W":
+
+                            active_camera = cam_locations[0];
+
+                            Z_Axis();
+                            break;
+
+                        case "Camera S":
+
+                            active_camera = cam_locations[2];
+
+                            X_Axis();
+                            break;
+                    }
+                    main_camera.transform.Rotate(0.0f, 90.0f, 0.0f);
+                }
+
+                main_camera.gameObject.transform.position = active_camera.transform.position;
+
                 switch (active_camera.gameObject.name)
                 {
                     case "Camera N":
-
-                        active_camera = cam_locations[1];
-
+                        /*background.transform.GetChild(0).gameObject.SetActive(true);
+                        background.transform.GetChild(1).gameObject.SetActive(false);
+                        background.transform.GetChild(2).gameObject.SetActive(false);
+                        background.transform.GetChild(3).gameObject.SetActive(false);*/
                         X_Axis();
                         break;
 
                     case "Camera E":
-
-                        active_camera = cam_locations[3];
-
+                        /*background.transform.GetChild(0).gameObject.SetActive(false);
+                        background.transform.GetChild(1).gameObject.SetActive(true);
+                        background.transform.GetChild(2).gameObject.SetActive(false);
+                        background.transform.GetChild(3).gameObject.SetActive(false);*/
                         Z_Axis();
                         break;
 
                     case "Camera W":
-
-                        active_camera = cam_locations[0];
-
+                        /*background.transform.GetChild(0).gameObject.SetActive(false);
+                        background.transform.GetChild(1).gameObject.SetActive(false);
+                        background.transform.GetChild(2).gameObject.SetActive(true);
+                        background.transform.GetChild(3).gameObject.SetActive(false);*/
                         Z_Axis();
                         break;
 
                     case "Camera S":
-
-                        active_camera = cam_locations[2];
-
+                        /*background.transform.GetChild(0).gameObject.SetActive(false);
+                        background.transform.GetChild(1).gameObject.SetActive(false);
+                        background.transform.GetChild(2).gameObject.SetActive(false);
+                        background.transform.GetChild(3).gameObject.SetActive(true);*/
                         X_Axis();
                         break;
                 }
-                main_camera.transform.Rotate(0.0f, 90.0f, 0.0f);
             }
-
-            main_camera.gameObject.transform.position = active_camera.transform.position;
-
-            switch (active_camera.gameObject.name)
-            {
-                case "Camera N":
-                    /*background.transform.GetChild(0).gameObject.SetActive(true);
-                    background.transform.GetChild(1).gameObject.SetActive(false);
-                    background.transform.GetChild(2).gameObject.SetActive(false);
-                    background.transform.GetChild(3).gameObject.SetActive(false);*/
-                    X_Axis();
-                    break;
-
-                case "Camera E":
-                    /*background.transform.GetChild(0).gameObject.SetActive(false);
-                    background.transform.GetChild(1).gameObject.SetActive(true);
-                    background.transform.GetChild(2).gameObject.SetActive(false);
-                    background.transform.GetChild(3).gameObject.SetActive(false);*/
-                    Z_Axis();
-                    break;
-
-                case "Camera W":
-                    /*background.transform.GetChild(0).gameObject.SetActive(false);
-                    background.transform.GetChild(1).gameObject.SetActive(false);
-                    background.transform.GetChild(2).gameObject.SetActive(true);
-                    background.transform.GetChild(3).gameObject.SetActive(false);*/
-                    Z_Axis();
-                    break;
-
-                case "Camera S":
-                    /*background.transform.GetChild(0).gameObject.SetActive(false);
-                    background.transform.GetChild(1).gameObject.SetActive(false);
-                    background.transform.GetChild(2).gameObject.SetActive(false);
-                    background.transform.GetChild(3).gameObject.SetActive(true);*/
-                    X_Axis();
-                    break;
-            }
+            //Debug.Log(active_camera.name);
+            GameObject.FindGameObjectWithTag("Manager").GetComponent<Collider_Manager>().UpdateSolids(active_camera);
         }
-        //Debug.Log(active_camera.name);
-        GameObject.FindGameObjectWithTag("Manager").GetComponent<Collider_Manager>().UpdateSolids(active_camera);    
     }
-
     public GameObject GetCamLoc()
     {
         

@@ -39,6 +39,6 @@ public class Distance_Scaling : MonoBehaviour
         if (multiplier_value >= 0)
         { transform.localScale = default_scale * (multiplier_value + 1); }
         else
-        { transform.localScale = default_scale * (0.5f / multiplier_value); }
+        { transform.localScale = default_scale * (0.5f / Mathf.Abs(multiplier_value)); }
     }
 }
