@@ -28,6 +28,7 @@ public class Player_Movement : MonoBehaviour
     public Vector2 mouse_pos;
     private GameObject selected_tile;
     [SerializeField] private Canvas canvas;
+    private GameObject cosmetics;
 
     [SerializeField] private bool perspective_change_enabled = true;
     [SerializeField] private bool block_movement_enabled = true;
@@ -46,6 +47,7 @@ public class Player_Movement : MonoBehaviour
         controls.Camera.Select.performed += ctx => Select();
         active_camera = cam_locations[0];
         canvas.enabled = false;
+        cosmetics = GameObject.FindGameObjectWithTag("Bounds");
     }
 
     /*private void Start()
@@ -122,7 +124,12 @@ public class Player_Movement : MonoBehaviour
             GameObject select = FindObjectOfType<Obj_Movement>().GetSelection();
             if (select != null)
             {
-                selected_tile = select;
+                if (select.GetComponent<Movement_Options>().can_be_moved)
+                {
+                    selected_tile = select;
+                    selected_tile.GetComponent<BoxCollider2D>().enabled = false;
+                    selected_tile.transform.GetChild(0).gameObject.GetComponent<BoxCollider>().enabled = false;
+                }
             }
         }
     }
@@ -133,12 +140,20 @@ public class Player_Movement : MonoBehaviour
             in_orthodox = !in_orthodox;
             if (in_orthodox)
             {
+                cosmetics.SetActive(true);
+                if (selected_tile != null)
+                {
+                    selected_tile.GetComponent<BoxCollider2D>().enabled = true;
+                    selected_tile.transform.GetChild(0).gameObject.GetComponent<BoxCollider>().enabled = true;
+                    selected_tile = null;
+                }
                 canvas.enabled = false;
                 perpesctive_cam.enabled = false;
                 main_camera.enabled = true;
             }
             else
             {
+                cosmetics.SetActive(false);
                 canvas.enabled = true;
                 perpesctive_cam.enabled = true;
                 main_camera.enabled = false;

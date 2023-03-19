@@ -10,6 +10,8 @@ public class Movement_Options : MonoBehaviour
     private int down = 0;
     private int left = 0;
     private int right = 0;
+
+    public bool can_be_moved = true;
     // Start is called before the first frame update
     void Start()
     {
