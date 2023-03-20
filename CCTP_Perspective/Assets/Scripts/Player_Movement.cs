@@ -29,6 +29,8 @@ public class Player_Movement : MonoBehaviour
     private GameObject selected_tile;
     [SerializeField] private Canvas canvas;
     private GameObject cosmetics;
+    private GameObject visual;
+    public bool on_main_axis = true;
 
     [SerializeField] private bool perspective_change_enabled = true;
     [SerializeField] private bool block_movement_enabled = true;
@@ -50,10 +52,10 @@ public class Player_Movement : MonoBehaviour
         cosmetics = GameObject.FindGameObjectWithTag("Bounds");
     }
 
-    /*private void Start()
+    private void Start()
     {
-        active_camera = cam_locations[0]; 
-    }*/
+        visual = FindObjectOfType<Animator>().gameObject;
+    }
 
     // Update is called once per frame
     void Update()
@@ -181,7 +183,7 @@ public class Player_Movement : MonoBehaviour
 
     private void Z_Axis()
     {
-
+        on_main_axis = false;
         gameObject.GetComponent<Rigidbody2D>().isKinematic = true;
         z_axis.GetComponent<Rigidbody>().isKinematic = false;
         gameObject.GetComponent<Collider2D>().isTrigger = true;
@@ -189,7 +191,7 @@ public class Player_Movement : MonoBehaviour
 
     private void X_Axis()
     {
-
+        on_main_axis = true;
         gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
         z_axis.GetComponent<Rigidbody>().isKinematic = true;
         gameObject.GetComponent<Collider2D>().isTrigger = false;
@@ -212,7 +214,7 @@ public class Player_Movement : MonoBehaviour
                         case "Camera N":
 
                             active_camera = cam_locations[2];
-
+                            
 
                             break;
 
@@ -243,7 +245,6 @@ public class Player_Movement : MonoBehaviour
                         case "Camera N":
 
                             active_camera = cam_locations[1];
-
                             X_Axis();
                             break;
 
@@ -264,6 +265,7 @@ public class Player_Movement : MonoBehaviour
                         case "Camera S":
 
                             active_camera = cam_locations[2];
+                            
 
                             X_Axis();
                             break;
@@ -276,34 +278,25 @@ public class Player_Movement : MonoBehaviour
                 switch (active_camera.gameObject.name)
                 {
                     case "Camera N":
-                        /*background.transform.GetChild(0).gameObject.SetActive(true);
-                        background.transform.GetChild(1).gameObject.SetActive(false);
-                        background.transform.GetChild(2).gameObject.SetActive(false);
-                        background.transform.GetChild(3).gameObject.SetActive(false);*/
+                        visual.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                        visual.GetComponent<SpriteRenderer>().flipX = true;
+                        
                         X_Axis();
                         break;
 
                     case "Camera E":
-                        /*background.transform.GetChild(0).gameObject.SetActive(false);
-                        background.transform.GetChild(1).gameObject.SetActive(true);
-                        background.transform.GetChild(2).gameObject.SetActive(false);
-                        background.transform.GetChild(3).gameObject.SetActive(false);*/
+                        visual.transform.rotation = Quaternion.Euler(0f, Mathf.Abs(90f), 0f);
                         Z_Axis();
                         break;
 
                     case "Camera W":
-                        /*background.transform.GetChild(0).gameObject.SetActive(false);
-                        background.transform.GetChild(1).gameObject.SetActive(false);
-                        background.transform.GetChild(2).gameObject.SetActive(true);
-                        background.transform.GetChild(3).gameObject.SetActive(false);*/
+                        visual.transform.rotation = Quaternion.Euler(0f, Mathf.Abs(90f), 0f);
                         Z_Axis();
                         break;
 
                     case "Camera S":
-                        /*background.transform.GetChild(0).gameObject.SetActive(false);
-                        background.transform.GetChild(1).gameObject.SetActive(false);
-                        background.transform.GetChild(2).gameObject.SetActive(false);
-                        background.transform.GetChild(3).gameObject.SetActive(true);*/
+                        visual.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                        visual.GetComponent<SpriteRenderer>().flipX = false;
                         X_Axis();
                         break;
                 }
