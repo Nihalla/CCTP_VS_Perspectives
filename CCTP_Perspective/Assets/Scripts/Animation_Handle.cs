@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Animation_Handle : MonoBehaviour
 {
+    [SerializeField] private bool active = true;
     public Animator anim;
 
     public int move_velocity;
     private float player_input = 0;
     private Player_Movement player_script;
-    private Vector3 default_scale;
+    public Vector3 default_scale;
 
     // Start is called before the first frame update
     void Start()
@@ -23,23 +24,20 @@ public class Animation_Handle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        player_input = player_script.movement_input.x;
-        if (!player_script.on_main_axis)
+        if (active)
         {
+            player_input = player_script.movement_input.x;
+
             if (player_input < 0)
             {
-                gameObject.transform.localScale = new Vector3(Mathf.Abs(default_scale.x), default_scale.y, default_scale.z);
+                gameObject.transform.localScale = new Vector3(Mathf.Abs(default_scale.x) * -1, default_scale.y, default_scale.z);
             }
-            else if( player_input > 0)
+            else if (player_input > 0)
             {
                 gameObject.transform.localScale = new Vector3(Mathf.Abs(default_scale.x), default_scale.y, default_scale.z);
             }
+
+            anim?.SetFloat(move_velocity, Mathf.Abs(player_input));
         }
-        else
-        {
-            gameObject.transform.localScale = default_scale;
-        }
-        
-        anim?.SetFloat(move_velocity, Mathf.Abs(player_input));
     }
 }

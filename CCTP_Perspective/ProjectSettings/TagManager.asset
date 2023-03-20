@@ -9,6 +9,7 @@ TagManager:
   - ZY_Collider_Extend
   - Moveable
   - Bounds
+  - Audio
   layers:
   - Default
   - TransparentFX

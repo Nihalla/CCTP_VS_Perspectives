@@ -274,9 +274,10 @@ public class Player_Movement : MonoBehaviour
                 }
 
                 main_camera.gameObject.transform.position = active_camera.transform.position;
-
+                visual.transform.localScale = visual.GetComponent<Animation_Handle>().default_scale;
                 switch (active_camera.gameObject.name)
                 {
+                    
                     case "Camera N":
                         visual.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
                         visual.GetComponent<SpriteRenderer>().flipX = true;
@@ -301,6 +302,7 @@ public class Player_Movement : MonoBehaviour
                         break;
                 }
             }
+            
             //Debug.Log(active_camera.name);
             GameObject.FindGameObjectWithTag("Manager").GetComponent<Collider_Manager>().UpdateSolids(active_camera);
         }

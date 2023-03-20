@@ -12,7 +12,7 @@ public class Obj_Movement : MonoBehaviour
     [SerializeField] private Camera cam;
     Plane plane;
     [SerializeField] private LayerMask ignore;
-
+    public GameObject obj;
     void Awake()
     {
 
@@ -47,10 +47,12 @@ public class Obj_Movement : MonoBehaviour
 
                 Transform objectHit = hit.transform;
                 Debug.Log(objectHit.gameObject.name);
+                obj = objectHit.gameObject;
                 if (objectHit.parent != null)
                 {
                     if (objectHit.parent.tag == "Moveable")
                     {
+                        
                         return objectHit.parent.gameObject;
                     }
                 }
