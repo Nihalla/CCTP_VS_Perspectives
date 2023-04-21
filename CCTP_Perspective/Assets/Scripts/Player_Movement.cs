@@ -84,10 +84,10 @@ public class Player_Movement : MonoBehaviour
                     z_axis.GetComponent<Rigidbody>().velocity = Vector3.SmoothDamp(z_axis.GetComponent<Rigidbody>().velocity, target_vel, ref m_Velocity, m_MovementSmoothing);
                     transform.position = new Vector3(transform.position.x, z_axis.transform.position.y, z_axis.transform.position.z);
 
-                    if (Z_jump.GetGround() && jump)
+                    if (jump)
                     {
-                        Z_jump.SetGround(false);
                         z_axis.GetComponent<Rigidbody>().AddForce(new Vector2(0f, 250f));
+                        Z_jump.SetGround(false);  
                     }
                     jump = false;
 
@@ -98,10 +98,10 @@ public class Player_Movement : MonoBehaviour
                     Vector3 target_velo = new Vector3(0, z_axis.GetComponent<Rigidbody>().velocity.y, movement_input.x * 5f);
                     z_axis.GetComponent<Rigidbody>().velocity = Vector3.SmoothDamp(z_axis.GetComponent<Rigidbody>().velocity, target_velo, ref m_Velocity, m_MovementSmoothing);
                     transform.position = new Vector3(transform.position.x, z_axis.transform.position.y, z_axis.transform.position.z);
-                    if (Z_jump.GetGround() && jump)
+                    if (jump)
                     {
-                        Z_jump.SetGround(false);
                         z_axis.GetComponent<Rigidbody>().AddForce(new Vector2(0f, 250f));
+                        Z_jump.SetGround(false);               
                     }
                     jump = false;
 
@@ -198,7 +198,15 @@ public class Player_Movement : MonoBehaviour
     }
     private void Jump()
     {
-        jump = true;
+        if (!on_main_axis && Z_jump.GetGround())
+        {
+            jump = true;
+        }
+
+        if(on_main_axis)
+        {
+            jump = true;
+        }
     }
 
     private void ChangeCam()
